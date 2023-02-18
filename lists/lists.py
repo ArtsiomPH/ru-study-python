@@ -29,4 +29,22 @@ class ListExercise:
         :param query: Искомый элемент
         :return: Номер элемента
         """
-        pass
+
+        def binary_search(search_list: list[int], element: int, start: int, finish: int) -> int:
+            if start > finish:
+                return -1
+
+            mid = (start + finish) // 2
+
+            if query == input_list[mid]:
+                return mid
+            elif query > input_list[mid]:
+                return binary_search(search_list, element, mid + 1, finish)
+            else:
+                return binary_search(search_list, element, start, mid - 1)
+
+        begin = 0
+        end = len(input_list) - 1
+
+        index = binary_search(input_list, query, begin, end)
+        return index
