@@ -16,7 +16,7 @@ class MapExercise:
         """
 
         def get_validated_rate(movie: dict) -> Optional[float]:
-            if movie["rating_kinopoisk"] not in ["", "0"] and len(movie["country"].split(",")) >= 2:
+            if movie["rating_kinopoisk"] not in ("", "0") and movie["country"].count(",") >= 1:
                 return float(movie["rating_kinopoisk"])
             return None
 
