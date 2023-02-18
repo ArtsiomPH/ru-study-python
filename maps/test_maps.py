@@ -14,7 +14,6 @@ class TestMapExercise:
             list_of_movies = list(DictReader(movies))
         return list_of_movies
 
-    @pytest.mark.skip(reason="MapExercise.rating is not implemented")
     def test_rating(self, list_of_movies: list[dict]) -> None:
         average_rating = MapExercise.rating(list_of_movies)
         assert round(average_rating, 15) == 6.809410385259628
