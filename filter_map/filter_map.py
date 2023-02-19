@@ -16,7 +16,5 @@ class FilterMapExercise:
         :return: Отфильтрованный список.
         """
 
-        list_of_filter_results = list(
-            map(lambda x: func(x)[1], filter(lambda x: func(x)[0], input_array))
-        )
+        list_of_filter_results = list(res[1] for res in map(func, input_array) if res[0])
         return list_of_filter_results
