@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Response, make_response, request
 
 
 class FlaskExercise:
@@ -28,4 +28,17 @@ class FlaskExercise:
 
     @staticmethod
     def configure_routes(app: Flask) -> None:
-        pass
+        DB: dict = {}
+
+        @app.post("/user")
+        def create_user() -> Response:
+            data = request.get_json()
+            user_name = data.get("name", None)
+
+            if user_name is None:
+                response = make_response({"errors": {"name": "This field is required"}}, 422)
+                return response
+
+            DB[user_name] = {}
+            response = make_response({"data": f"User {user_name} is created!"}, 201)
+            return response

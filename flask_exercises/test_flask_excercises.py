@@ -43,13 +43,11 @@ class TestFlaskExercise:
         assert response.status_code == HTTPStatus.NO_CONTENT
         return response.get_json()
 
-    @pytest.mark.skip
     def test_create(self) -> None:
         response = self.create_user({"name": "Heisenberg"})
 
         assert response == {"data": "User Heisenberg is created!"}
 
-    @pytest.mark.skip
     def test_unprocessable_entity(self) -> None:
         response = self.flask_client.post(
             "/user",
@@ -58,7 +56,7 @@ class TestFlaskExercise:
         )
 
         assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
-        assert response == {"errors": {"name": "This field is required"}}
+        assert response.get_json() == {"errors": {"name": "This field is required"}}
 
     @pytest.mark.skip
     def test_get(self) -> None:
