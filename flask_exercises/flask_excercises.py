@@ -42,3 +42,14 @@ class FlaskExercise:
             DB[user_name] = {}
             response = make_response({"data": f"User {user_name} is created!"}, 201)
             return response
+
+        @app.get("/user/<name>")
+        def get_user(name: str) -> Response:
+            if DB.get(name, None) is None:
+                response = make_response(
+                    {"errors": {"name": "There are no user with this name"}}, 404
+                )
+                return response
+
+            response = make_response({"data": f"My name is {name}"}, 200)
+            return response
