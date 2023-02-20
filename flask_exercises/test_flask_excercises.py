@@ -64,7 +64,6 @@ class TestFlaskExercise:
 
         assert response == {"data": "My name is Heisenberg"}
 
-    @pytest.mark.skip
     def test_update(self) -> None:
         self.create_user({"name": "Heisenberg"})
 

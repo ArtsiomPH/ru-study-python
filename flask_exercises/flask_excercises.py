@@ -30,6 +30,12 @@ class FlaskExercise:
     def configure_routes(app: Flask) -> None:
         DB: dict = {}
 
+        def update_db_dict(old_name: str, new_name: str) -> None:
+            new_user_dict = {new_name: value for key, value in DB.items() if key == old_name}
+            DB.pop(old_name)
+            DB.update(new_user_dict)
+            return None
+
         @app.post("/user")
         def create_user() -> Response:
             data = request.get_json()
@@ -52,4 +58,13 @@ class FlaskExercise:
                 return response
 
             response = make_response({"data": f"My name is {name}"}, 200)
+            return response
+
+        @app.patch("/user/<name>")
+        def update_user(name: str) -> Response:
+            new_user_name = request.get_json()["name"]
+
+            update_db_dict(name, new_user_name)
+
+            response = make_response({"data": f"My name is {new_user_name}"}, 200)
             return response
