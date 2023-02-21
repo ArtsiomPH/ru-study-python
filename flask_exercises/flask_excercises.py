@@ -1,5 +1,7 @@
 from flask import Flask, Response, make_response, request
 
+from http import HTTPStatus
+
 
 class FlaskExercise:
     """
@@ -67,4 +69,12 @@ class FlaskExercise:
             update_db_dict(name, new_user_name)
 
             response = make_response({"data": f"My name is {new_user_name}"}, 200)
+            return response
+
+        @app.delete("/user/<name>")
+        def delete_user(name: str) -> Response:
+
+            del DB[name]
+
+            response = make_response({}, HTTPStatus.NO_CONTENT)
             return response
