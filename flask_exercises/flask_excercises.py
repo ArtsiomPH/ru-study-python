@@ -64,6 +64,12 @@ class FlaskExercise:
 
         @app.patch("/user/<name>")
         def update_user(name: str) -> Response:
+            if DB.get(name, None) is None:
+                response = make_response(
+                    {"errors": {"name": "There are no user with this name"}}, 404
+                )
+                return response
+
             new_user_name = request.get_json()["name"]
 
             update_db_dict(name, new_user_name)
@@ -73,6 +79,11 @@ class FlaskExercise:
 
         @app.delete("/user/<name>")
         def delete_user(name: str) -> Response:
+            if DB.get(name, None) is None:
+                response = make_response(
+                    {"errors": {"name": "There are no user with this name"}}, 404
+                )
+                return response
 
             del DB[name]
 
