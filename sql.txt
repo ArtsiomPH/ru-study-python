@@ -35,10 +35,10 @@ ALTER TABLE Employees ADD COLUMN department_id INT REFERENCES Departments(id);
 1) Показать работников у которых нет почты или почта не в корпоративном домене (домен dualbootpartners.com)
 SELECT name, last_name
 FROM Employees
-WHERE email != 'dualbootpartners.com' OR email IS NULL;
+WHERE email NOT LIKE '%dualbootpartners.com' OR email IS NULL;
 2) Получить список работников нанятых в последние 30 дней
 SELECT * FROM EMPLOYEES
-WHERE AGE(CURRENT_DATE, hire_date) < interval '30 days';
+WHERE AGE(hire_date) < interval '30 days';
 3) Найти максимальную и минимальную зарплату по каждому департаменту
 SELECT Departments.name AS DEPARTMENT, max(salary) AS Max_Salary, min(salary) AS Min_Salary
 FROM Employees
