@@ -1,4 +1,6 @@
-from flask import Flask
+from flask import Flask, Response, make_response, request
+
+from http import HTTPStatus
 
 
 class FlaskExercise:
@@ -28,4 +30,62 @@ class FlaskExercise:
 
     @staticmethod
     def configure_routes(app: Flask) -> None:
-        pass
+        DB: dict = {}
+
+        def update_db_dict(old_name: str, new_name: str) -> None:
+            new_user_dict = {new_name: value for key, value in DB.items() if key == old_name}
+            DB.pop(old_name)
+            DB.update(new_user_dict)
+            return None
+
+        @app.post("/user")
+        def create_user() -> Response:
+            data = request.get_json()
+            user_name = data.get("name", None)
+
+            if user_name is None:
+                response = make_response({"errors": {"name": "This field is required"}}, 422)
+                return response
+
+            DB[user_name] = {}
+            response = make_response({"data": f"User {user_name} is created!"}, 201)
+            return response
+
+        @app.get("/user/<name>")
+        def get_user(name: str) -> Response:
+            if DB.get(name, None) is None:
+                response = make_response(
+                    {"errors": {"name": "There are no user with this name"}}, 404
+                )
+                return response
+
+            response = make_response({"data": f"My name is {name}"}, 200)
+            return response
+
+        @app.patch("/user/<name>")
+        def update_user(name: str) -> Response:
+            if DB.get(name, None) is None:
+                response = make_response(
+                    {"errors": {"name": "There are no user with this name"}}, 404
+                )
+                return response
+
+            new_user_name = request.get_json()["name"]
+
+            update_db_dict(name, new_user_name)
+
+            response = make_response({"data": f"My name is {new_user_name}"}, 200)
+            return response
+
+        @app.delete("/user/<name>")
+        def delete_user(name: str) -> Response:
+            if DB.get(name, None) is None:
+                response = make_response(
+                    {"errors": {"name": "There are no user with this name"}}, 404
+                )
+                return response
+
+            del DB[name]
+
+            response = make_response({}, HTTPStatus.NO_CONTENT)
+            return response

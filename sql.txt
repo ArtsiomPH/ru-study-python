@@ -1,0 +1,60 @@
+1. Create regions:
+CREATE TABLE Regions (id serial PRIMARY KEY, name varchar);
+2. Create locations
+CREATE TABLE Locations (
+ id serial PRIMARY KEY,
+ address VARCHAR,
+ region_id INT,
+ FOREIGN KEY(region_id)
+    REFERENCES Regions(id)
+);
+3.Create employees
+CREATE TABLE Employees (
+ id serial PRIMARY KEY,
+ name VARCHAR,
+ last_name VARCHAR,
+ hire_date DATE,
+ salary INT,
+ email VARCHAR,
+ manager_id INT,
+ FOREIGN KEY(manager_id)
+    REFERENCES Employees(id));
+4. Create departments
+CREATE TABLE Departments (
+ id serial PRIMARY KEY,
+ name VARCHAR,
+ location_id INT,
+ manager_id INT,
+ FOREIGN KEY(location_id)
+    REFERENCES Locations(id),
+ FOREIGN KEY(manager_id)
+    REFERENCES Employees(id));
+5. Add department column to employees
+ALTER TABLE Employees ADD COLUMN department_id INT REFERENCES Departments(id);
+
+1) Показать работников у которых нет почты или почта не в корпоративном домене (домен dualbootpartners.com)
+SELECT name, last_name
+FROM Employees
+WHERE email NOT LIKE '%dualbootpartners.com' OR email IS NULL;
+2) Получить список работников нанятых в последние 30 дней
+SELECT * FROM EMPLOYEES
+WHERE AGE(hire_date) < interval '30 days';
+3) Найти максимальную и минимальную зарплату по каждому департаменту
+SELECT Departments.name AS DEPARTMENT, max(salary) AS Max_Salary, min(salary) AS Min_Salary
+FROM Employees
+JOIN Departments ON Employees.department_id = Departments.id
+GROUP BY Departments.name;
+4) Посчитать количество работников в каждом регионе
+SELECT Regions.name, count(Employees.id)
+FROM Employees JOIN Departments ON Employees.department_id = Departments.id
+JOIN Locations ON Departments.location_id = Locations.id
+JOIN Regions ON Locations.Region_id = Regions.id
+GROUP BY Regions.name
+5) Показать сотрудников у которых фамилия длиннее 10 символов
+SELECT name, last_name
+FROM Employees
+WHERE char_length(last_name) > 10;
+6) Показать сотрудников с зарплатой выше средней по всей компании
+SELECT name, last_name
+FROM Employees
+WHERE salary > (SELECT avg(salary) FROM Employees);
